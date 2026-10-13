@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Виртуальные окружения
+.venv/
+venv/
+
+# Кэши инструментов
+.pytest_cache/
+.ruff_cache/
+
+# Отдельный репозиторий hello-py (не входит в этот)
+hello-py/
