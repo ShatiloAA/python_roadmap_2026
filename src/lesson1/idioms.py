@@ -17,13 +17,11 @@ def is_palindrome(text: str) -> bool:
 
 def index_words(text: str) -> list[tuple[int, str]]:
     words = text.lower().split()
-    result = []
-    for i, w in enumerate(words):
-        result.append((i, w))
+    result = [(i, w) for i, w in enumerate(words)]
     return result
 
 
 def unique_words(text: str) -> list[str]:
     words = text.lower().split()
-    unique: dict = {w: w for w in words}
+    unique: dict[str, None] = dict.fromkeys(words)
     return list(unique)
