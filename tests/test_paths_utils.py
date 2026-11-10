@@ -4,9 +4,6 @@ import pytest
 
 from lesson5.paths_utils import ensure_dir, get_data_dir, list_files
 
-TEST_DIR = Path(__file__).parent
-NEW_DIR = Path(TEST_DIR) / "data" / "test"
-
 
 @pytest.mark.parametrize(
     ("path", "expected"),
@@ -23,15 +20,27 @@ def test_get_data_dir(path: str | Path, expected: Path) -> None:
 @pytest.mark.parametrize(
     ("path", "expected"),
     [
-        (Path(TEST_DIR), Path(TEST_DIR)),
-        (Path(NEW_DIR), Path(NEW_DIR)),
+        (Path("new_dir"), Path("new_dir")),
     ],
 )
-def test_ensure_dir(path: str | Path, expected: Path):
-    folder = Path(NEW_DIR)
-    if folder.is_dir():
-        folder.rmdir()
-    assert ensure_dir(path) == expected
+def test_ensure_dir_new_dir(tmp_path: Path, path: str | Path, expected: Path):
+    folder = tmp_path / path
+    assert not folder.is_dir()
+    assert ensure_dir(folder) == tmp_path / expected
+    assert folder.is_dir()
+
+
+@pytest.mark.parametrize(
+    ("path", "expected"),
+    [
+        (Path("exist_dir"), Path("exist_dir")),
+    ],
+)
+def test_ensure_dir_exist_dir(tmp_path: Path, path: str | Path, expected: Path):
+    folder = tmp_path / path
+    folder.mkdir()
+    assert ensure_dir(folder) == tmp_path / expected
+    assert folder.is_dir()
 
 
 @pytest.mark.parametrize(
@@ -162,7 +171,7 @@ def test_ensure_dir(path: str | Path, expected: Path):
                 Path("test_utils.py"),
             ],
         ),
-        # (None, [], []),
+        (None, [], []),
     ],
 )
 def test_list_files(
@@ -170,7 +179,7 @@ def test_list_files(
 ):
     added_dir = tmp_path / "added_dir"
     added_dir.mkdir()
-    [(tmp_path / f).touch() for f in files]
-    print(tmp_path.iterdir())
+    for f in files:
+        (tmp_path / f).touch()
 
     assert list_files(tmp_path, ext) == [tmp_path / e for e in expected]
