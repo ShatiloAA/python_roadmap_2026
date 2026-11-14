@@ -1,9 +1,11 @@
 import pytest
 
-from lesson6.collection_tasks import (
+from lesson6.collections_tasks import (
     common_elements,
     count_chars,
     group_by_length,
+    is_anagram,
+    pairs_to_dict,
     unique_in_order,
 )
 
@@ -71,7 +73,42 @@ def test_count_chars(text: str, expected: dict[str, int]):
                 3: ["aaa", "aaa"],
             },
         ),
+        (["bbb", "a", "cc"], {1: ["a"], 2: ["cc"], 3: ["bbb"]}),
     ],
 )
 def test_group_by_length(words: list[str], expected: dict[int, list[str]]):
     assert group_by_length(words) == expected
+
+
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        ("топор", "ро пот", True),
+        ("Иван Крылов", "Нави Волырк", True),
+        ("сор", "poc", False),
+        (" ", " ", True),
+        ("", "", True),
+    ],
+)
+def test_is_anagram(a: str, b: str, expected: bool):
+    assert is_anagram(a, b) == expected
+
+
+@pytest.mark.parametrize(
+    ("pairs", "expected"),
+    [
+        ([("a", 1), ("b", 2), ("c", 3)], {"a": 1, "b": 2, "c": 3}),
+        ([("a", 1), ("b", 2), ("c", 3), ("a", 4)], {"b": 2, "c": 3, "a": 4}),
+        ([("a", 1), ("a", 2), ("a", 3), ("a", 4)], {"a": 4}),
+        (
+            [
+                ("a", 1),
+                ("A", 2),
+            ],
+            {"a": 1, "A": 2},
+        ),
+        ([("", 0), (" ", -1)], {"": 0, " ": -1}),
+    ],
+)
+def test_pairs_to_dict(pairs: list[tuple[str, int]], expected: dict[str, int]):
+    assert pairs_to_dict(pairs) == expected
